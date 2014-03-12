@@ -7,6 +7,10 @@ hopefully soon[TM].
 
 ## Building
 
+### Dependencies
+
+Simple: QT4 toolchain. Never tested on QT5
+
 
 ### Linux
 
