@@ -2,6 +2,8 @@
 ipproof-ng
 Makefile
 
+moc_mainwindow.cpp
+
 # Compiled Object files
 *.slo
 *.lo
