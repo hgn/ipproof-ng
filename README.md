@@ -7,7 +7,7 @@
 ### Linux
 
 ```
-qmake -project
+qmake
 make
 ```
 
