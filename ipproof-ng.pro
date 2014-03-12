@@ -1,12 +1,9 @@
+
 TEMPLATE = app
-TARGET = ipproof-server-ng
+TARGET = 
+DEPENDPATH += . include src
+INCLUDEPATH += .
 
-
-CONFIG += qt debug warn_on
-
-QT += network widgets
-
-
-HEADERS += include/server.h
-
-SOURCES += src/server.cpp
+# Input
+HEADERS += include/server.h include/mainwindow.h
+SOURCES += src/server.cpp src/mainwindow.cpp
