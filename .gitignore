@@ -1,3 +1,7 @@
+
+ipproof-ng
+Makefile
+
 # Compiled Object files
 *.slo
 *.lo
