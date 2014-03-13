@@ -21,6 +21,21 @@ void MeasurementConfigDialog::clicked_start()
     accept();
 }
 
+#include <QLabel>
+
+void MeasurementConfigDialog::add_content_logo()
+{
+    QHBoxLayout *layout = new QHBoxLayout;
+
+    QLabel *topLevelLabel = new QLabel;
+    QPixmap pixmap(":/image-logo.png");
+    topLevelLabel->setPixmap(pixmap);
+    topLevelLabel->setMask(pixmap.mask());
+
+    layout->addWidget(topLevelLabel);
+
+    m_main_box->addLayout(layout);
+}
 
 void MeasurementConfigDialog::add_content_buttons()
 {
@@ -134,6 +149,7 @@ MeasurementConfigDialog::MeasurementConfigDialog(MainWindow *parent)
 
     add_content_label();
     add_selection_area();
+    add_content_logo();
     m_main_box->addStretch(1);
     add_content_buttons();
 

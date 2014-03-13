@@ -27,6 +27,7 @@ class MeasurementConfigDialog : public QDialog
     private:
 
         void add_content_label();
+        void add_content_logo();
         void add_content_buttons();
         void add_selection_area();
         void add_selection_area_network_protocol(QHBoxLayout *);

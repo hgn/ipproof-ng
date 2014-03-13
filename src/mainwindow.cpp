@@ -4,6 +4,9 @@
 #include <QMessageBox>
 #include <QMenuBar>
 #include <QSplitter>
+#include <QDateTime>
+#include <QTextEdit>
+
 
 #include "mainwindow.h"
 #include "measurement-config-dialog.h"
@@ -19,7 +22,7 @@ MainWindow::MainWindow()
 	QVBoxLayout *layout = new QVBoxLayout;
 	layout->setMargin(5);
 
-    add_main_content(layout);
+	add_main_content(layout);
 
 	widget->setLayout(layout);
 
@@ -31,38 +34,36 @@ MainWindow::MainWindow()
 	setMinimumSize(160, 160);
 	resize(480, 320);
 
-    startTimer(1000);
+	startTimer(1000);
 }
 
 
-#include <QTextEdit>
-
 void MainWindow::add_content_troughput_graph(QSplitter *splitter)
 {
-        m_throughput_widget = new Throughput(this);
-        m_throughput_widget->resize(400, 200);
+	m_throughput_widget = new Throughput(this);
+	m_throughput_widget->resize(400, 200);
 
-        splitter->addWidget(m_throughput_widget);
+	splitter->addWidget(m_throughput_widget);
 }
 
 
 void MainWindow::add_main_content(QVBoxLayout *layout)
 {
-        QSplitter *splitter = new QSplitter(Qt::Vertical);
-                QTextEdit *textedit1 = new QTextEdit;
+	QSplitter *splitter = new QSplitter(Qt::Vertical);
+	QTextEdit *textedit1 = new QTextEdit;
 
-        add_content_troughput_graph(splitter);
+	add_content_troughput_graph(splitter);
 
-        splitter->addWidget(textedit1);
+	splitter->addWidget(textedit1);
 
-        layout->addWidget(splitter);
+	layout->addWidget(splitter);
 }
 
 
 void MainWindow::timerEvent(QTimerEvent *event)
 {
-    //qDebug() << "Timer ID:" << event->timerId();
-    m_throughput_widget->repaint();
+	//qDebug() << "Timer ID:" << event->timerId();
+	m_throughput_widget->repaint();
 }
 
 
@@ -75,124 +76,122 @@ void MainWindow::contextMenuEvent(QContextMenuEvent *event)
 
 void MainWindow::set_expected_bytes(unsigned int bytes)
 {
-    m_expected_bytes = bytes;
+	m_expected_bytes = bytes;
 }
 
 
 void MainWindow::close_listening_sockets()
 {
-    QVectorIterator<TCPServer *> i(m_tcp_servers);
+	QVectorIterator<TCPServer *> i(m_tcp_servers);
 
-    while (i.hasNext()) {
-        TCPServer *s = i.next();
-        s->close();
-        delete s;
-    }
+	while (i.hasNext()) {
+		TCPServer *s = i.next();
+		s->close();
+		delete s;
+	}
 
-    m_tcp_servers.clear();
+	m_tcp_servers.clear();
 }
 
 
 void MainWindow::set_listening_ports(int ports[], int ports_no)
 {
-    int i;
+	int i;
 
-    close_listening_sockets();
+	close_listening_sockets();
 
-    for (i = 0; i < ports_no; i++) {
-        qWarning() << "Listening on port: " << ports[i];
-        TCPServer *server = new TCPServer();
-        server->register_main_window(this);
-        m_tcp_servers.append(server);
-        server->startServer(ports[i]);
-    }
+	for (i = 0; i < ports_no; i++) {
+		qWarning() << "Listening on port: " << ports[i];
+		TCPServer *server = new TCPServer();
+		server->register_main_window(this);
+		m_tcp_servers.append(server);
+		server->startServer(ports[i]);
+	}
 }
 
-#include <QDateTime>
 
 QString MainWindow::get_socket_id(QTcpSocket *s)
 {
 
-    return  QString("%1:%2:%3:%4")
-            .arg(s->peerAddress().toString())
-            .arg(s->peerPort())
-            .arg(s->localAddress().toString())
-            .arg(s->localPort());
+	return  QString("%1:%2:%3:%4")
+		.arg(s->peerAddress().toString())
+		.arg(s->peerPort())
+		.arg(s->localAddress().toString())
+		.arg(s->localPort());
 }
 
 QVector<ConnectionData *> MainWindow::get_connection_data()
 {
-    return m_connection_data;
+	return m_connection_data;
 }
 
 
 void MainWindow::add_network_connection_data(QTcpSocket *socket, unsigned int packet_len)
 {
-    QString id;
-    ConnectionData *s;
-    bool found_in_db = false;
-    unsigned int timestamp = QDateTime::currentDateTime().toTime_t();
+	QString id;
+	ConnectionData *s;
+	bool found_in_db = false;
+	unsigned int timestamp = QDateTime::currentDateTime().toTime_t();
 
-    id = get_socket_id(socket);
+	id = get_socket_id(socket);
 
-    QVectorIterator<ConnectionData *> i(m_connection_data);
+	QVectorIterator<ConnectionData *> i(m_connection_data);
 
-    while (i.hasNext()) {
-        s = i.next();
+	while (i.hasNext()) {
+		s = i.next();
 
-        if (id != s->id) {
-            qDebug() << "Not identical: " << id << s->id;
-            continue;
-        }
+		if (id != s->id) {
+			qDebug() << "Not identical: " << id << s->id;
+			continue;
+		}
 
-        found_in_db = true;
-        // found!
-        s->bytes_received += packet_len;
+		found_in_db = true;
+		// found!
+		s->bytes_received += packet_len;
 
-        qDebug() << "RECEIVED DATA ALL: " << s->bytes_received;
-        break;
-    }
+		qDebug() << "RECEIVED DATA ALL: " << s->bytes_received;
+		break;
+	}
 
-    if (found_in_db == false) {
-        s = new ConnectionData();
-        s->id = id;
-        s->bytes_received = packet_len;
-        m_connection_data.append(s);
-        qDebug() << "New connection from " << id;
-    }
+	if (found_in_db == false) {
+		s = new ConnectionData();
+		s->id = id;
+		s->bytes_received = packet_len;
+		m_connection_data.append(s);
+		qDebug() << "New connection from " << id;
+	}
 
-    // update bytes_per_second vector;
-    QVectorIterator< QPair< unsigned int , unsigned int > > iter(s->bytes_per_second);
+	// update bytes_per_second vector;
+	QVectorIterator< QPair< unsigned int , unsigned int > > iter(s->bytes_per_second);
 
-    found_in_db = false;
-    while (iter.hasNext()) {
-        QPair< unsigned int , unsigned int > s = iter.next();
+	found_in_db = false;
+	while (iter.hasNext()) {
+		QPair< unsigned int , unsigned int > s = iter.next();
 
-        if (s.first == timestamp) {
-            s.second += packet_len;
-            found_in_db = true;
-            break;
-        }
-        qDebug() << s;
-    }
+		if (s.first == timestamp) {
+			s.second += packet_len;
+			found_in_db = true;
+			break;
+		}
+		qDebug() << s;
+	}
 
-    if (found_in_db == false) {
-        s->bytes_per_second.append(qMakePair(timestamp, packet_len));
-        qDebug() << s;
-    }
+	if (found_in_db == false) {
+		s->bytes_per_second.append(qMakePair(timestamp, packet_len));
+		qDebug() << s;
+	}
 }
 
 
 void MainWindow::newFile()
 {
-    MeasurementConfigDialog *d = new MeasurementConfigDialog(this);
-    d->exec();
+	MeasurementConfigDialog *d = new MeasurementConfigDialog(this);
+	d->exec();
 }
 
 
 void MainWindow::about()
 {
-    //infoLabel->setText(tr("Invoked <b>Help|About</b>"));
 	QMessageBox::about(this, tr("About Menu"),
 			tr("The <b>Menu</b> example shows how to create "
 				"menu-bar menus and context menus."));
