@@ -1,4 +1,5 @@
 #include "server-listener.h"
+#include "mainwindow.h"
 
 ServerListenerThread::ServerListenerThread(int ID, QObject *parent) :
     QThread(parent)
@@ -6,34 +7,36 @@ ServerListenerThread::ServerListenerThread(int ID, QObject *parent) :
     this->socketDescriptor = ID;
 }
 
+
+void ServerListenerThread::set_main_window(MainWindow *main_window)
+{
+    m_main_window = main_window;
+}
+
+
 void ServerListenerThread::run()
 {
-    // thread starts here
+
     qDebug() << " Thread started";
 
     socket = new QTcpSocket();
 
-    // set the ID
+
     if(!socket->setSocketDescriptor(this->socketDescriptor))
     {
-        // something's wrong, we just emit a signal
+
         emit error(socket->error());
         return;
     }
 
-    // connect socket and signal
-    // note - Qt::DirectConnection is used because it's multithreaded
-    //        This makes the slot to be invoked immediately, when the signal is emitted.
 
     connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()), Qt::DirectConnection);
     connect(socket, SIGNAL(disconnected()), this, SLOT(disconnected()));
 
-    // We'll have multiple clients, we want to know which is which
+
     qDebug() << socketDescriptor << " Client connected";
 
-    // make this thread a loop,
-    // thread will stay alive so that signal/slot to function properly
-    // not dropped out in the middle when thread dies
+
 
     exec();
 }
@@ -44,9 +47,11 @@ void ServerListenerThread::readyRead()
     QByteArray Data = socket->readAll();
 
     // will write on server side window
-    qDebug() << socketDescriptor << " Data in: " << Data;
+    //qDebug() << socketDescriptor << " Data in: " << Data.length();
 
-    socket->write(Data);
+    m_main_window->add_network_connection_data(socket, Data.length());
+
+    //socket->write(Data);
 }
 
 void ServerListenerThread::disconnected()
@@ -65,9 +70,15 @@ TCPServer::TCPServer(QObject *parent) :
 {
 }
 
-void TCPServer::startServer()
+void TCPServer::register_main_window(MainWindow *window)
 {
-	int port = 1234;
+    m_main_window = window;
+}
+
+
+void TCPServer::startServer(int port)
+{
+    m_port = port;
 
 	if(!this->listen(QHostAddress::Any, port))
 	{
@@ -79,14 +90,21 @@ void TCPServer::startServer()
 	}
 }
 
+
+void TCPServer::close()
+{
+    QTcpServer::close();
+}
+
 // This function is called by QTcpServer when a new connection is available. 
 void TCPServer::incomingConnection(int socketDescriptor)
 {
 	// We have a new connection
 	qDebug() << socketDescriptor << " Connecting...";
 
-	// Every new connection will be run in a newly created thread
+    // Every new connection will be in a newly created thread
 	ServerListenerThread *thread = new ServerListenerThread(socketDescriptor, this);
+    thread->set_main_window(m_main_window);
 
 	// connect signal/slot
 	// once a thread is not needed, it will be beleted later
