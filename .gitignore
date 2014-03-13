@@ -1,5 +1,5 @@
 ipproof-ng.pro.user
-ipproof-ng
+ipproof-ng-server
 Makefile
 
 moc_*.cpp
