@@ -39,13 +39,10 @@ MainWindow::MainWindow()
 
 void MainWindow::add_content_troughput_graph(QSplitter *splitter)
 {
+        m_throughput_widget = new Throughput(this);
+        m_throughput_widget->resize(400, 200);
 
-
-        Throughput *throughput_widget = new Throughput();
-        throughput_widget->resize(400, 200);
-
-        splitter->addWidget(throughput_widget);
-
+        splitter->addWidget(m_throughput_widget);
 }
 
 
@@ -65,6 +62,7 @@ void MainWindow::add_main_content(QVBoxLayout *layout)
 void MainWindow::timerEvent(QTimerEvent *event)
 {
     //qDebug() << "Timer ID:" << event->timerId();
+    m_throughput_widget->repaint();
 }
 
 
@@ -121,6 +119,12 @@ QString MainWindow::get_socket_id(QTcpSocket *s)
             .arg(s->localAddress().toString())
             .arg(s->localPort());
 }
+
+QVector<ConnectionData *> MainWindow::get_connection_data()
+{
+    return m_connection_data;
+}
+
 
 void MainWindow::add_network_connection_data(QTcpSocket *socket, unsigned int packet_len)
 {

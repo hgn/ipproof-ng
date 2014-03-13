@@ -7,6 +7,7 @@
 #include <QSplitter>
 
 #include "server-listener.h"
+#include "throughput-widget.h"
 
 class QAction;
 class QActionGroup;
@@ -22,6 +23,7 @@ struct ConnectionData {
     QVector< QPair< unsigned int , unsigned int > > bytes_per_second;
 };
 
+class Throughput;
 
  class MainWindow : public QMainWindow
  {
@@ -34,6 +36,8 @@ struct ConnectionData {
      void set_listening_ports(int ports[], int ports_no);
 
      void add_network_connection_data(QTcpSocket *socket, unsigned int packet_len);
+
+     QVector<ConnectionData *> get_connection_data();
 
  protected:
      void contextMenuEvent(QContextMenuEvent *event);
@@ -49,6 +53,8 @@ struct ConnectionData {
      void add_main_content(QVBoxLayout *layout);
 
      QString get_socket_id(QTcpSocket *);
+
+     Throughput *m_throughput_widget;
 
      void createActions();
      void createMenus();
