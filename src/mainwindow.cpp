@@ -75,7 +75,7 @@ MainWindow::MainWindow()
 
 void MainWindow::newConnection(int socket)
 {
-
+	(void)socket;
 }
 
 void MainWindow::add_content_troughput_graph(QSplitter *splitter)
