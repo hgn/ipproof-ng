@@ -1,6 +1,7 @@
 ipproof-ng.pro.user
 ipproof-ng-server
 Makefile
+qrc_resource.cpp
 
 moc_*.cpp
 
