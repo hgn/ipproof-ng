@@ -228,6 +228,7 @@ void MainWindow::add_network_connection_data(QTcpSocket *socket, unsigned int pa
 
 		m_connection_data.append(s);
 		qDebug() << "New connection from " << id;
+	}
 
 	// update bytes_per_second vector;
 	QVectorIterator< QPair< unsigned int , unsigned int > > iter(s->bytes_per_second);
