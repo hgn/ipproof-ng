@@ -149,7 +149,10 @@ void MainWindow::add_main_content(QVBoxLayout *layout)
 
 	add_content_troughput_graph(splitter);
 
-    QLabel *label = new QLabel("IProof NG", 0);
+    QLabel *label = new QLabel();
+    QPixmap pixmap(":/image-ipproof-logo-small.png");
+    label->setPixmap(pixmap);
+    label->setMask(pixmap.mask());
     label->setStyleSheet("QLabel { color: #555555; font-size: 32px; font-weight:100; }");
     box->addWidget(label);
 
@@ -283,12 +286,12 @@ void MainWindow::add_network_connection_data(QTcpSocket *socket, unsigned int pa
 			found_in_db = true;
 			break;
 		}
-		qDebug() << s;
+		//qDebug() << s;
 	}
 
 	if (found_in_db == false) {
 		s->bytes_per_second.append(qMakePair(timestamp, packet_len));
-		qDebug() << s;
+		//qDebug() << s;
 	}
 }
 

@@ -1,5 +1,6 @@
  <!DOCTYPE RCC><RCC version="1.0">
  <qresource>
      <file alias="image-logo.png">resource/logo.png</file>
+     <file alias="image-ipproof-logo-small.png">resource/ipproof-logo-small.png</file>
  </qresource>
  </RCC>

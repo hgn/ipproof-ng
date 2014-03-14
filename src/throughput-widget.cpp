@@ -91,9 +91,6 @@ void Throughput::drawLines(QPainter *qp)
 {
     int i;
 
-    qWarning() << this->height();
-    qWarning() << this->width();
-
     draw_width = this->width() - (OUTER_PADDING * 2);
     draw_start_right = this->width() - OUTER_PADDING;
 
