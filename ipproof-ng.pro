@@ -15,10 +15,12 @@ HEADERS += \
     include/server.h \
     include/server-listener.h \
     include/measurement-config-dialog.h \
-    include/throughput-widget.h
+    include/throughput-widget.h \
+		include/connection-stat-widget.h
 SOURCES += \
     src/mainwindow.cpp \
     src/server.cpp \
     src/server-listener.cpp \
     src/measurement-config-dialog.cpp \
-    src/throughput-widget.cpp
+    src/throughput-widget.cpp \
+		src/connection-stat-widget.cpp

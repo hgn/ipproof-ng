@@ -6,6 +6,9 @@
 #include <QSplitter>
 #include <QDateTime>
 #include <QTextEdit>
+#include <QFrame>
+#include <QLabel>
+#include <QGridLayout>
 
 
 #include "mainwindow.h"
@@ -79,101 +82,47 @@ void MainWindow::newConnection(int socket)
 void MainWindow::add_content_troughput_graph(QSplitter *splitter)
 {
 	m_throughput_widget = new Throughput(this);
-    m_throughput_widget->resize(400, 200);
+	m_throughput_widget->resize(400, 200);
 
 	splitter->addWidget(m_throughput_widget);
 }
 
-#include <QFrame>
-#include <QLabel>
-#include <QGridLayout>
-
 void MainWindow::add_status_widget(void)
 {
-    QGridLayout *layout = new QGridLayout;
-
-    QLabel *l1 = new QLabel("Duration", 0);
-    l1->setStyleSheet("QLabel { color: #555555; font-size: 22px; font-weight:100; }");
-    //layout->addWidget(l1);
-    layout->addWidget(l1, 0, 0);
-
-    QLabel *l2 = new QLabel("Receive", 0);
-    l2->setStyleSheet("QLabel { color: #555555; font-size: 17px; font-weight:100; }");
-    //layout->addWidget(l2);
-    layout->addWidget(l2, 1, 0);
-
-    QLabel *l3 = new QLabel("Transmit", 0);
-    l3->setStyleSheet("QLabel { color: #555555; font-size: 17px; font-weight:100; }");
-    //layout->addWidget(l2);
-    layout->addWidget(l3, 1, 1);
-
-    QLabel *l4 = new QLabel("Amount", 0);
-    l4->setStyleSheet("QLabel { color: #555555; font-size: 17px; font-weight:100; }");
-    //layout->addWidget(l2);
-    layout->addWidget(l4, 2, 0);
-
-    QLabel *l5 = new QLabel("Amount", 0);
-    l5->setStyleSheet("QLabel { color: #555555; font-size: 17px; font-weight:100; }");
-    //layout->addWidget(l2);
-    layout->addWidget(l5, 2, 1);
-
-    QLabel *l6 = new QLabel("Bandwidth MAX", 0);
-    l6->setStyleSheet("QLabel { color: #555555; font-size: 17px; font-weight:100; }");
-    //layout->addWidget(l2);
-    layout->addWidget(l6, 3, 0);
-
-    QLabel *l7 = new QLabel("Bandwidth AVG", 0);
-    l7->setStyleSheet("QLabel { color: #555555; font-size: 17px; font-weight:100; }");
-    //layout->addWidget(l2);
-    layout->addWidget(l7, 3, 1);
-
-    QLabel *l8 = new QLabel("Bandwidth MAX", 0);
-    l8->setStyleSheet("QLabel { color: #555555; font-size: 17px; font-weight:100; }");
-    //layout->addWidget(l2);
-    layout->addWidget(l8, 4, 0);
-
-    QLabel *l9 = new QLabel("Bandwidth AVG", 0);
-    l9->setStyleSheet("QLabel { color: #555555; font-size: 17px; font-weight:100; }");
-    //layout->addWidget(l2);
-    layout->addWidget(l9, 4, 1);
-
-    m_lower_status_layout->addLayout(layout);
 }
 
 void MainWindow::add_main_content(QVBoxLayout *layout)
 {
 	QSplitter *splitter = new QSplitter(Qt::Vertical);
-    QWidget *container = new QWidget;
-    QVBoxLayout *box =  new QVBoxLayout;
-    m_lower_status_layout = new QHBoxLayout;
+	QWidget *container = new QWidget;
+	QVBoxLayout *box =  new QVBoxLayout;
+	m_lower_status_layout = new QHBoxLayout;
 
 	add_content_troughput_graph(splitter);
 
-    QLabel *label = new QLabel();
-    QPixmap pixmap(":/image-ipproof-logo-small.png");
-    label->setPixmap(pixmap);
-    label->setMask(pixmap.mask());
-    label->setStyleSheet("QLabel { color: #555555; font-size: 32px; font-weight:100; }");
-    box->addWidget(label);
+	QLabel *label = new QLabel();
+	QPixmap pixmap(":/image-ipproof-logo-small.png");
+	label->setPixmap(pixmap);
+	label->setMask(pixmap.mask());
+	label->setStyleSheet("QLabel { color: #555555; font-size: 32px; font-weight:100; }");
+	box->addWidget(label);
 
 
-    box->addLayout(m_lower_status_layout);
+	box->addLayout(m_lower_status_layout);
 
-    container->setLayout(box);
-    splitter->addWidget(container);
+	container->setLayout(box);
+	splitter->addWidget(container);
 	layout->addWidget(splitter);
 
-    box->addStretch(1);
+	box->addStretch(1);
 
-    add_status_widget();
-
-
+	add_status_widget();
 }
 
 
 void MainWindow::timerEvent(QTimerEvent *event)
 {
-    (void)event;
+	(void)event;
 	m_throughput_widget->repaint();
 }
 
@@ -236,6 +185,12 @@ QVector<ConnectionData *> MainWindow::get_connection_data()
 	return m_connection_data;
 }
 
+void MainWindow::register_new_connectio_stat(ConnectionData *conn_data)
+{
+	conn_data->connection_stat_widget = new ConnectionStatWidget();
+	conn_data->connection_stat_widget->register_connection_data(conn_data);
+	conn_data->connection_stat_widget->show(m_lower_status_layout);
+}
 
 void MainWindow::add_network_connection_data(QTcpSocket *socket, unsigned int packet_len)
 {
@@ -268,10 +223,13 @@ void MainWindow::add_network_connection_data(QTcpSocket *socket, unsigned int pa
 		s = new ConnectionData();
 		s->id = id;
 		s->bytes_received = packet_len;
-        s->color = ColorPicker::Instance()->next();
+		s->color = ColorPicker::Instance()->next();
+		register_new_connectio_stat(s);
 
 		m_connection_data.append(s);
 		qDebug() << "New connection from " << id;
+	} else {
+		s->connection_stat_widget->update_data();
 	}
 
 	// update bytes_per_second vector;

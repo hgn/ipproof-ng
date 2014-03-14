@@ -7,9 +7,10 @@
 #include <QSplitter>
 #include <QColor>
 
-
 #include "server-listener.h"
 #include "throughput-widget.h"
+#include "connection-stat-widget.h"
+
 
 class QAction;
 class QActionGroup;
@@ -33,72 +34,75 @@ private:
 };
 
 
+class Throughput;
+
 struct ConnectionData {
     QString id;
     unsigned int bytes_received;
     unsigned int data_start;
     QColor color;
     QVector< QPair< unsigned int , unsigned int > > bytes_per_second;
+    ConnectionStatWidget *connection_stat_widget;
 };
 
-class Throughput;
+class MainWindow : public QMainWindow
+{
+	Q_OBJECT
 
- class MainWindow : public QMainWindow
- {
-     Q_OBJECT
+	public:
+		MainWindow();
 
- public:
-     MainWindow();
+		void show_dialog();
+		void set_expected_bytes(unsigned int);
+		void set_listening_ports(int ports[], int ports_no);
 
-     void show_dialog();
-     void set_expected_bytes(unsigned int);
-     void set_listening_ports(int ports[], int ports_no);
+		void add_network_connection_data(QTcpSocket *socket, unsigned int packet_len);
 
-     void add_network_connection_data(QTcpSocket *socket, unsigned int packet_len);
+		QVector<ConnectionData *> get_connection_data();
+		void newConnection(int);
 
-     QVector<ConnectionData *> get_connection_data();
-     void newConnection(int);
+	protected:
 
- protected:
-     void contextMenuEvent(QContextMenuEvent *event);
-     void timerEvent(QTimerEvent *event);
+		void contextMenuEvent(QContextMenuEvent *event);
+		void timerEvent(QTimerEvent *event);
 
- private slots:
-     void newFile();
-     void about();
+	private slots:
 
+		void newFile();
+		void about();
 
- private:
+	private:
 
-     void add_content_troughput_graph(QSplitter *splitter);
-     void add_main_content(QVBoxLayout *layout);
-     void add_status_widget();
+		void register_new_connectio_stat(ConnectionData *);
+		void add_content_troughput_graph(QSplitter *splitter);
+		void add_main_content(QVBoxLayout *layout);
+		void add_status_widget();
 
-     QString get_socket_id(QTcpSocket *);
+		QString get_socket_id(QTcpSocket *);
 
-     QHBoxLayout *m_lower_status_layout;
+		QHBoxLayout *m_lower_status_layout;
 
-     Throughput *m_throughput_widget;
+		Throughput *m_throughput_widget;
 
-     void createActions();
-     void createMenus();
+		void createActions();
+		void createMenus();
 
-     void close_listening_sockets();
+		void close_listening_sockets();
 
-     QVector<TCPServer *> m_tcp_servers;
-     QVector<ConnectionData *> m_connection_data;
+		QVector<TCPServer *> m_tcp_servers;
+		QVector<ConnectionData *> m_connection_data;
 
-     unsigned int m_expected_bytes;
+		unsigned int m_expected_bytes;
 
-     QMenu *fileMenu;
-     QMenu *helpMenu;
+		QMenu *fileMenu;
+		QMenu *helpMenu;
 
-     QActionGroup *alignmentGroup;
-     QAction *newAct;
-     QAction *exitAct;
-     QAction *aboutAct;
-     QAction *aboutQtAct;
-     QLabel *infoLabel;
- };
+		QActionGroup *alignmentGroup;
+		QAction *newAct;
+		QAction *exitAct;
+		QAction *aboutAct;
+		QAction *aboutQtAct;
+		QLabel *infoLabel;
+};
 
  #endif
