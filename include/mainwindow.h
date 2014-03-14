@@ -57,6 +57,7 @@ class Throughput;
      void add_network_connection_data(QTcpSocket *socket, unsigned int packet_len);
 
      QVector<ConnectionData *> get_connection_data();
+     void newConnection(int);
 
  protected:
      void contextMenuEvent(QContextMenuEvent *event);
@@ -71,8 +72,11 @@ class Throughput;
 
      void add_content_troughput_graph(QSplitter *splitter);
      void add_main_content(QVBoxLayout *layout);
+     void add_status_widget();
 
      QString get_socket_id(QTcpSocket *);
+
+     QHBoxLayout *m_lower_status_layout;
 
      Throughput *m_throughput_widget;
 

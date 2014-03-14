@@ -21,7 +21,6 @@ ColorPicker* ColorPicker::Instance()
     if (!m_pInstance)
         m_pInstance = new ColorPicker;
     return m_pInstance;
-
 }
 
 ColorPicker::ColorPicker()
@@ -38,12 +37,14 @@ ColorPicker::ColorPicker()
     m_data[7] = QColor(Qt::darkCyan);
 }
 
+
 QColor ColorPicker::next()
 {
     QColor ret = m_data[m_index];
     m_index = (++m_index) % 7;
     return ret;
 }
+
 
 MainWindow::MainWindow()
 {
@@ -70,6 +71,11 @@ MainWindow::MainWindow()
 }
 
 
+void MainWindow::newConnection(int socket)
+{
+
+}
+
 void MainWindow::add_content_troughput_graph(QSplitter *splitter)
 {
 	m_throughput_widget = new Throughput(this);
@@ -78,15 +84,87 @@ void MainWindow::add_content_troughput_graph(QSplitter *splitter)
 	splitter->addWidget(m_throughput_widget);
 }
 
+#include <QFrame>
+#include <QLabel>
+#include <QGridLayout>
+
+void MainWindow::add_status_widget(void)
+{
+    QGridLayout *layout = new QGridLayout;
+
+    QLabel *l1 = new QLabel("Duration", 0);
+    l1->setStyleSheet("QLabel { color: #555555; font-size: 22px; font-weight:100; }");
+    //layout->addWidget(l1);
+    layout->addWidget(l1, 0, 0);
+
+    QLabel *l2 = new QLabel("Receive", 0);
+    l2->setStyleSheet("QLabel { color: #555555; font-size: 17px; font-weight:100; }");
+    //layout->addWidget(l2);
+    layout->addWidget(l2, 1, 0);
+
+    QLabel *l3 = new QLabel("Transmit", 0);
+    l3->setStyleSheet("QLabel { color: #555555; font-size: 17px; font-weight:100; }");
+    //layout->addWidget(l2);
+    layout->addWidget(l3, 1, 1);
+
+    QLabel *l4 = new QLabel("Amount", 0);
+    l4->setStyleSheet("QLabel { color: #555555; font-size: 17px; font-weight:100; }");
+    //layout->addWidget(l2);
+    layout->addWidget(l4, 2, 0);
+
+    QLabel *l5 = new QLabel("Amount", 0);
+    l5->setStyleSheet("QLabel { color: #555555; font-size: 17px; font-weight:100; }");
+    //layout->addWidget(l2);
+    layout->addWidget(l5, 2, 1);
+
+    QLabel *l6 = new QLabel("Bandwidth MAX", 0);
+    l6->setStyleSheet("QLabel { color: #555555; font-size: 17px; font-weight:100; }");
+    //layout->addWidget(l2);
+    layout->addWidget(l6, 3, 0);
+
+    QLabel *l7 = new QLabel("Bandwidth AVG", 0);
+    l7->setStyleSheet("QLabel { color: #555555; font-size: 17px; font-weight:100; }");
+    //layout->addWidget(l2);
+    layout->addWidget(l7, 3, 1);
+
+    QLabel *l8 = new QLabel("Bandwidth MAX", 0);
+    l8->setStyleSheet("QLabel { color: #555555; font-size: 17px; font-weight:100; }");
+    //layout->addWidget(l2);
+    layout->addWidget(l8, 4, 0);
+
+    QLabel *l9 = new QLabel("Bandwidth AVG", 0);
+    l9->setStyleSheet("QLabel { color: #555555; font-size: 17px; font-weight:100; }");
+    //layout->addWidget(l2);
+    layout->addWidget(l9, 4, 1);
+
+    m_lower_status_layout->addLayout(layout);
+}
 
 void MainWindow::add_main_content(QVBoxLayout *layout)
 {
 	QSplitter *splitter = new QSplitter(Qt::Vertical);
-	QTextEdit *textedit1 = new QTextEdit;
+    QWidget *container = new QWidget;
+    QVBoxLayout *box =  new QVBoxLayout;
+    m_lower_status_layout = new QHBoxLayout;
 
 	add_content_troughput_graph(splitter);
-	splitter->addWidget(textedit1);
+
+    QLabel *label = new QLabel("IProof NG", 0);
+    label->setStyleSheet("QLabel { color: #555555; font-size: 32px; font-weight:100; }");
+    box->addWidget(label);
+
+
+    box->addLayout(m_lower_status_layout);
+
+    container->setLayout(box);
+    splitter->addWidget(container);
 	layout->addWidget(splitter);
+
+    box->addStretch(1);
+
+    add_status_widget();
+
+
 }
 
 

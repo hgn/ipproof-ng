@@ -101,6 +101,8 @@ void TCPServer::incomingConnection(int socketDescriptor)
 	ServerListenerThread *thread = new ServerListenerThread(socketDescriptor, this);
     thread->set_main_window(m_main_window);
 
+    m_main_window->newConnection(socketDescriptor);
+
 	// connect signal/slot
 	// once a thread is not needed, it will be beleted later
 	connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
