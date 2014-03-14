@@ -39,6 +39,7 @@ class Throughput;
 struct ConnectionData {
     QString id;
     unsigned int bytes_received;
+    unsigned int bytes_expected;
     unsigned int data_start;
     QColor color;
     QVector< QPair< unsigned int , unsigned int > > bytes_per_second;

@@ -212,9 +212,8 @@ void MainWindow::add_network_connection_data(QTcpSocket *socket, unsigned int pa
 		}
 
 		found_in_db = true;
-		// found!
 		s->bytes_received += packet_len;
-
+		s->connection_stat_widget->update_data();
 		qDebug() << "RECEIVED DATA ALL: " << s->bytes_received;
 		break;
 	}
@@ -223,14 +222,12 @@ void MainWindow::add_network_connection_data(QTcpSocket *socket, unsigned int pa
 		s = new ConnectionData();
 		s->id = id;
 		s->bytes_received = packet_len;
+		s->bytes_expected = 30000;
 		s->color = ColorPicker::Instance()->next();
 		register_new_connectio_stat(s);
 
 		m_connection_data.append(s);
 		qDebug() << "New connection from " << id;
-	} else {
-		s->connection_stat_widget->update_data();
-	}
 
 	// update bytes_per_second vector;
 	QVectorIterator< QPair< unsigned int , unsigned int > > iter(s->bytes_per_second);
