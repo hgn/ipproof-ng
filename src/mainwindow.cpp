@@ -21,31 +21,31 @@ ColorPicker* ColorPicker::m_pInstance = NULL;
 
 ColorPicker* ColorPicker::Instance()
 {
-    if (!m_pInstance)
-        m_pInstance = new ColorPicker;
-    return m_pInstance;
+	if (!m_pInstance)
+		m_pInstance = new ColorPicker;
+	return m_pInstance;
 }
 
 ColorPicker::ColorPicker()
 {
-    m_index = 0;
+	m_index = 0;
 
-    m_data[0] = QColor(Qt::red);
-    m_data[1] = QColor(Qt::blue);
-    m_data[2] = QColor(Qt::green);
-    m_data[3] = QColor(Qt::cyan);
-    m_data[4] = QColor(Qt::yellow);
-    m_data[5] = QColor(Qt::darkBlue);
-    m_data[6] = QColor(Qt::darkRed);
-    m_data[7] = QColor(Qt::darkCyan);
+	m_data[0] = QColor(Qt::red);
+	m_data[1] = QColor(Qt::blue);
+	m_data[2] = QColor(Qt::green);
+	m_data[3] = QColor(Qt::cyan);
+	m_data[4] = QColor(Qt::yellow);
+	m_data[5] = QColor(Qt::darkBlue);
+	m_data[6] = QColor(Qt::darkRed);
+	m_data[7] = QColor(Qt::darkCyan);
 }
 
 
 QColor ColorPicker::next()
 {
-    QColor ret = m_data[m_index];
-    m_index = (++m_index) % 7;
-    return ret;
+	QColor ret = m_data[m_index];
+	m_index = (++m_index) % sizeof(m_data);
+	return ret;
 }
 
 
@@ -65,10 +65,9 @@ MainWindow::MainWindow()
 	createActions();
 	createMenus();
 
-	setWindowTitle(tr("Menus"));
-	setMinimumSize(160, 160);
-    resize(980, 820);
-    showMaximized();
+	setWindowTitle("IPProof Next Generation - Server");
+	setMinimumSize(460, 460);
+	showMaximized();
 
 	startTimer(1000);
 }
@@ -242,12 +241,10 @@ void MainWindow::add_network_connection_data(QTcpSocket *socket, unsigned int pa
 			found_in_db = true;
 			break;
 		}
-		//qDebug() << s;
 	}
 
 	if (found_in_db == false) {
 		s->bytes_per_second.append(qMakePair(timestamp, packet_len));
-		//qDebug() << s;
 	}
 }
 
@@ -269,7 +266,7 @@ void MainWindow::about()
 {
 	QMessageBox::about(this, tr("About Menu"),
 			tr("The <b>Menu</b> example shows how to create "
-				"menu-bar menus and context menus."));
+			"menu-bar menus and context menus."));
 }
 
 

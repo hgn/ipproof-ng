@@ -7,16 +7,17 @@
 
 #include "mainwindow.h"
 
+
 int main(int argc, char **argv)
 {
-    QApplication app(argc, argv);
-    MainWindow window;
+	QApplication app(argc, argv);
+	MainWindow window;
 
-    qWarning() << "";
-    qWarning() << "IPProof-NG (C)";
+	qWarning() << "";
+	qWarning() << "IPProof-NG (C)";
 
-    window.show();
-    window.show_dialog();
+	window.show();
+	window.show_dialog();
 
-    return app.exec();
+	return app.exec();
 }

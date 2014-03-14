@@ -20,30 +20,31 @@ class QMenu;
 
 
 class ColorPicker {
-public:
-   static ColorPicker* Instance();
-   QColor next();
+	public:
 
-private:
-   ColorPicker();
-   ColorPicker(ColorPicker const&){};
-   //ColorPicker& operator=(ColorPicker const&){};
-   static ColorPicker* m_pInstance;
-   int m_index;
-   QColor m_data[8];
+		static ColorPicker* Instance();
+		QColor next();
+
+	private:
+
+		ColorPicker();
+		ColorPicker(ColorPicker const&){};
+		static ColorPicker* m_pInstance;
+		int m_index;
+		QColor m_data[8];
 };
 
 
 class Throughput;
 
 struct ConnectionData {
-    QString id;
-    unsigned int bytes_received;
-    unsigned int bytes_expected;
-    unsigned int data_start;
-    QColor color;
-    QVector< QPair< unsigned int , unsigned int > > bytes_per_second;
-    ConnectionStatWidget *connection_stat_widget;
+	QString id;
+	unsigned int bytes_received;
+	unsigned int bytes_expected;
+	unsigned int data_start;
+	QColor color;
+	QVector< QPair< unsigned int , unsigned int > > bytes_per_second;
+	ConnectionStatWidget *connection_stat_widget;
 };
 
 class MainWindow : public QMainWindow

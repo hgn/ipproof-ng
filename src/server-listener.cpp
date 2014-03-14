@@ -5,54 +5,47 @@
 ServerListenerThread::ServerListenerThread(int ID, QObject *parent) :
     QThread(parent)
 {
-    this->socketDescriptor = ID;
+	this->socketDescriptor = ID;
 }
 
 
 void ServerListenerThread::set_main_window(MainWindow *main_window)
 {
-    m_main_window = main_window;
+	m_main_window = main_window;
 }
 
 
 void ServerListenerThread::run()
 {
-    qDebug() << " Thread started";
+	qDebug() << " Thread started";
 
-    socket = new QTcpSocket();
+	socket = new QTcpSocket();
 
-    if(!socket->setSocketDescriptor(this->socketDescriptor)) {
+	if(!socket->setSocketDescriptor(this->socketDescriptor)) {
+		emit error(socket->error());
+		return;
+	}
 
-        emit error(socket->error());
-        return;
-    }
+	connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()), Qt::DirectConnection);
+	connect(socket, SIGNAL(disconnected()), this, SLOT(disconnected()));
 
-    connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()), Qt::DirectConnection);
-    connect(socket, SIGNAL(disconnected()), this, SLOT(disconnected()));
+	qDebug() << socketDescriptor << " Client connected";
 
-
-    qDebug() << socketDescriptor << " Client connected";
-
-    exec();
+	exec();
 }
+
 
 void ServerListenerThread::readyRead()
 {
-    // get the information
     QByteArray Data = socket->readAll();
 
-    // will write on server side window
-    //qDebug() << socketDescriptor << " Data in: " << Data.length();
-
     m_main_window->add_network_connection_data(socket, Data.length());
-
-    //socket->write(Data);
 }
+
 
 void ServerListenerThread::disconnected()
 {
     qDebug() << socketDescriptor << " Disconnected";
-
 
     socket->deleteLater();
     exit(0);
@@ -67,7 +60,7 @@ TCPServer::TCPServer(QObject *parent) :
 
 void TCPServer::register_main_window(MainWindow *window)
 {
-    m_main_window = window;
+	m_main_window = window;
 }
 
 
