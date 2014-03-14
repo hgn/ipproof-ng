@@ -1,6 +1,7 @@
 #include "server-listener.h"
 #include "mainwindow.h"
 
+
 ServerListenerThread::ServerListenerThread(int ID, QObject *parent) :
     QThread(parent)
 {
@@ -16,27 +17,21 @@ void ServerListenerThread::set_main_window(MainWindow *main_window)
 
 void ServerListenerThread::run()
 {
-
     qDebug() << " Thread started";
 
     socket = new QTcpSocket();
 
-
-    if(!socket->setSocketDescriptor(this->socketDescriptor))
-    {
+    if(!socket->setSocketDescriptor(this->socketDescriptor)) {
 
         emit error(socket->error());
         return;
     }
-
 
     connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()), Qt::DirectConnection);
     connect(socket, SIGNAL(disconnected()), this, SLOT(disconnected()));
 
 
     qDebug() << socketDescriptor << " Client connected";
-
-
 
     exec();
 }

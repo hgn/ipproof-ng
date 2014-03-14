@@ -5,6 +5,8 @@
 
 #include "mainwindow.h"
 
+class ConnectionData;
+
 class Throughput : public QWidget
 {
   Q_OBJECT
@@ -16,6 +18,7 @@ class Throughput : public QWidget
     void paintEvent(QPaintEvent *event);
     void drawLines(QPainter *qp);
     void drawThroughtputGraphs(QPainter *qp);
+    void drawThroughputGraph(ConnectionData *, QPainter *, unsigned int now);
 
   private:
     MainWindow *m_main_window;

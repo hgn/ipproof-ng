@@ -5,6 +5,8 @@
 #include <QVBoxLayout>
 #include <QVector>
 #include <QSplitter>
+#include <QColor>
+
 
 #include "server-listener.h"
 #include "throughput-widget.h"
@@ -16,10 +18,26 @@ class QMenu;
 
 
 
+class ColorPicker {
+public:
+   static ColorPicker* Instance();
+   QColor next();
+
+private:
+   ColorPicker();
+   ColorPicker(ColorPicker const&){};
+   //ColorPicker& operator=(ColorPicker const&){};
+   static ColorPicker* m_pInstance;
+   int m_index;
+   QColor m_data[8];
+};
+
+
 struct ConnectionData {
     QString id;
     unsigned int bytes_received;
     unsigned int data_start;
+    QColor color;
     QVector< QPair< unsigned int , unsigned int > > bytes_per_second;
 };
 
@@ -32,6 +50,7 @@ class Throughput;
  public:
      MainWindow();
 
+     void show_dialog();
      void set_expected_bytes(unsigned int);
      void set_listening_ports(int ports[], int ports_no);
 
@@ -46,6 +65,7 @@ class Throughput;
  private slots:
      void newFile();
      void about();
+
 
  private:
 

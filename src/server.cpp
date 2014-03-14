@@ -16,6 +16,7 @@ int main(int argc, char **argv)
     qWarning() << "IPProof-NG (C)";
 
     window.show();
+    window.show_dialog();
 
     return app.exec();
 }

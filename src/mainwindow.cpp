@@ -13,6 +13,38 @@
 #include "server-listener.h"
 #include "throughput-widget.h"
 
+
+ColorPicker* ColorPicker::m_pInstance = NULL;
+
+ColorPicker* ColorPicker::Instance()
+{
+    if (!m_pInstance)
+        m_pInstance = new ColorPicker;
+    return m_pInstance;
+
+}
+
+ColorPicker::ColorPicker()
+{
+    m_index = 0;
+
+    m_data[0] = QColor(Qt::red);
+    m_data[1] = QColor(Qt::blue);
+    m_data[2] = QColor(Qt::green);
+    m_data[3] = QColor(Qt::cyan);
+    m_data[4] = QColor(Qt::yellow);
+    m_data[5] = QColor(Qt::darkBlue);
+    m_data[6] = QColor(Qt::darkRed);
+    m_data[7] = QColor(Qt::darkCyan);
+}
+
+QColor ColorPicker::next()
+{
+    QColor ret = m_data[m_index];
+    m_index = (++m_index) % 7;
+    return ret;
+}
+
 MainWindow::MainWindow()
 {
 	QWidget *widget = new QWidget;
@@ -29,10 +61,10 @@ MainWindow::MainWindow()
 	createActions();
 	createMenus();
 
-
 	setWindowTitle(tr("Menus"));
 	setMinimumSize(160, 160);
-	resize(480, 320);
+    resize(980, 820);
+    showMaximized();
 
 	startTimer(1000);
 }
@@ -41,7 +73,7 @@ MainWindow::MainWindow()
 void MainWindow::add_content_troughput_graph(QSplitter *splitter)
 {
 	m_throughput_widget = new Throughput(this);
-	m_throughput_widget->resize(400, 200);
+    m_throughput_widget->resize(400, 200);
 
 	splitter->addWidget(m_throughput_widget);
 }
@@ -53,16 +85,14 @@ void MainWindow::add_main_content(QVBoxLayout *layout)
 	QTextEdit *textedit1 = new QTextEdit;
 
 	add_content_troughput_graph(splitter);
-
 	splitter->addWidget(textedit1);
-
 	layout->addWidget(splitter);
 }
 
 
 void MainWindow::timerEvent(QTimerEvent *event)
 {
-	//qDebug() << "Timer ID:" << event->timerId();
+    (void)event;
 	m_throughput_widget->repaint();
 }
 
@@ -157,6 +187,8 @@ void MainWindow::add_network_connection_data(QTcpSocket *socket, unsigned int pa
 		s = new ConnectionData();
 		s->id = id;
 		s->bytes_received = packet_len;
+        s->color = ColorPicker::Instance()->next();
+
 		m_connection_data.append(s);
 		qDebug() << "New connection from " << id;
 	}
@@ -187,6 +219,12 @@ void MainWindow::newFile()
 {
 	MeasurementConfigDialog *d = new MeasurementConfigDialog(this);
 	d->exec();
+}
+
+
+void MainWindow::show_dialog()
+{
+    newFile();
 }
 
 
