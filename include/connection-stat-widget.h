@@ -6,6 +6,7 @@
 
 class ConnectionData;
 class QHBoxLayout;
+class ConnectionStatRectWidget;
 
 class ConnectionStatWidget : public QWidget
 {
@@ -13,14 +14,14 @@ class ConnectionStatWidget : public QWidget
 
 	public:
 
-		ConnectionStatWidget(QWidget *parent = 0);
+		ConnectionStatWidget(ConnectionData *, QWidget *parent = 0);
 		void show(QHBoxLayout *);
-		void register_connection_data(ConnectionData *);
 		void update_data();
 
 	private:
 
 		ConnectionData *m_connection_data;
+		ConnectionStatRectWidget *m_cs_rect_widget;
 
 };
 

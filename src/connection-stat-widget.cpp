@@ -7,24 +7,22 @@
 #include <QLabel>
 
 #include "connection-stat-widget.h"
+#include "connection-stat-rect-widget.h"
 #include "mainwindow.h"
 
 
-ConnectionStatWidget::ConnectionStatWidget(QWidget *parent)
+ConnectionStatWidget::ConnectionStatWidget(ConnectionData *cn, QWidget *parent)
     : QWidget(parent)
 {
-}
-
-
-void ConnectionStatWidget::register_connection_data(ConnectionData *data)
-{
-	m_connection_data = data;
+	m_connection_data = cn;
+	m_cs_rect_widget = new ConnectionStatRectWidget(this);
 }
 
 
 /* called when new data is available */
 void ConnectionStatWidget::update_data()
 {
+	m_cs_rect_widget->update_data();
 }
 
 

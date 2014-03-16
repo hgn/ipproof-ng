@@ -179,17 +179,19 @@ QString MainWindow::get_socket_id(QTcpSocket *s)
 		.arg(s->localPort());
 }
 
+
 QVector<ConnectionData *> MainWindow::get_connection_data()
 {
 	return m_connection_data;
 }
 
+
 void MainWindow::register_new_connectio_stat(ConnectionData *conn_data)
 {
-	conn_data->connection_stat_widget = new ConnectionStatWidget();
-	conn_data->connection_stat_widget->register_connection_data(conn_data);
+	conn_data->connection_stat_widget = new ConnectionStatWidget(conn_data);
 	conn_data->connection_stat_widget->show(m_lower_status_layout);
 }
+
 
 void MainWindow::add_network_connection_data(QTcpSocket *socket, unsigned int packet_len)
 {
