@@ -58,15 +58,23 @@ class MainWindow : public QMainWindow
 		void set_expected_bytes(unsigned int);
 		void set_listening_ports(int ports[], int ports_no);
 
-		void add_network_connection_data(QTcpSocket *socket, unsigned int packet_len);
-
 		QVector<ConnectionData *> get_connection_data();
 		void newConnection(int);
+		void add_network_connection_data(QTcpSocket *socket, unsigned int packet_len);
+
+	signals:
+		void new_data(QTcpSocket *socket, unsigned int packet_len);
+
+	public slots:
+
+		void add_network_connection_data_slot(QTcpSocket *socket, unsigned int packet_len);
 
 	protected:
 
 		void contextMenuEvent(QContextMenuEvent *event);
 		void timerEvent(QTimerEvent *event);
+
+
 
 	private slots:
 

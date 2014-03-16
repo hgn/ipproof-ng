@@ -53,6 +53,8 @@ MainWindow::MainWindow()
 {
 	QWidget *widget = new QWidget;
 	setCentralWidget(widget);
+	QObject::connect(this, SIGNAL(new_data(QTcpSocket *, unsigned int)), this, SLOT(add_network_connection_data_slot(QTcpSocket *, unsigned int)));
+
 
 
 	QVBoxLayout *layout = new QVBoxLayout;
@@ -192,8 +194,13 @@ void MainWindow::register_new_connectio_stat(ConnectionData *conn_data)
 		new ConnectionStatWidget(conn_data, m_lower_status_layout);
 }
 
-
 void MainWindow::add_network_connection_data(QTcpSocket *socket, unsigned int packet_len)
+{
+	emit new_data(socket, packet_len);
+}
+
+
+void MainWindow::add_network_connection_data_slot(QTcpSocket *socket, unsigned int packet_len)
 {
 	QString id;
 	ConnectionData *s;
