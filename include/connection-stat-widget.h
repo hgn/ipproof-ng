@@ -3,10 +3,13 @@
 
 #include <QWidget>
 
+class QLabel;
+class QGridLayout;
 
 class ConnectionData;
 class QHBoxLayout;
 class ConnectionStatRectWidget;
+
 
 class ConnectionStatWidget : public QWidget
 {
@@ -14,14 +17,27 @@ class ConnectionStatWidget : public QWidget
 
 	public:
 
-		ConnectionStatWidget(ConnectionData *, QWidget *parent = 0);
+		ConnectionStatWidget(ConnectionData *, QHBoxLayout *layout, QWidget *parent = 0);
 		void show(QHBoxLayout *);
 		void update_data();
 
 	private:
 
+		void init_layout();
+		void add_cs_rect_widget(QGridLayout *);
+
 		ConnectionData *m_connection_data;
 		ConnectionStatRectWidget *m_cs_rect_widget;
+
+		QHBoxLayout *m_parent_layout;
+
+		QLabel *m_tx_amount;
+		QLabel *m_tx_bandwidth_max;
+		QLabel *m_tx_bandwidth_avg;
+
+		QLabel *m_rx_amount;
+		QLabel *m_rx_bandwidth_max;
+		QLabel *m_rx_bandwidth_avg;
 
 };
 

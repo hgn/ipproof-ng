@@ -188,8 +188,8 @@ QVector<ConnectionData *> MainWindow::get_connection_data()
 
 void MainWindow::register_new_connectio_stat(ConnectionData *conn_data)
 {
-	conn_data->connection_stat_widget = new ConnectionStatWidget(conn_data);
-	conn_data->connection_stat_widget->show(m_lower_status_layout);
+	conn_data->connection_stat_widget =
+		new ConnectionStatWidget(conn_data, m_lower_status_layout);
 }
 
 

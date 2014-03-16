@@ -11,11 +11,14 @@
 #include "mainwindow.h"
 
 
-ConnectionStatWidget::ConnectionStatWidget(ConnectionData *cn, QWidget *parent)
+ConnectionStatWidget::ConnectionStatWidget(ConnectionData *cn,
+		QHBoxLayout *layout, QWidget *parent)
     : QWidget(parent)
 {
 	m_connection_data = cn;
-	m_cs_rect_widget = new ConnectionStatRectWidget(this);
+	m_parent_layout = layout;
+
+	init_layout();
 }
 
 
@@ -26,7 +29,14 @@ void ConnectionStatWidget::update_data()
 }
 
 
-void ConnectionStatWidget::show(QHBoxLayout *parent)
+void ConnectionStatWidget::add_cs_rect_widget(QGridLayout *l)
+{
+	m_cs_rect_widget = new ConnectionStatRectWidget(this);
+	l->addWidget(m_cs_rect_widget, 5, 0);
+}
+
+
+void ConnectionStatWidget::init_layout()
 {
 	QGridLayout *layout = new QGridLayout;
 
@@ -45,29 +55,31 @@ void ConnectionStatWidget::show(QHBoxLayout *parent)
 	// FIXME
 	int i = m_connection_data->bytes_received;
 
-	QLabel *l4 = new QLabel("Amount: - byte", 0);
-	l4->setStyleSheet("QLabel { color: #555555; font-size: 17px; font-weight:100; }");
-	layout->addWidget(l4, 2, 0);
+	m_tx_amount = new QLabel("Amount: - byte", 0);
+	m_tx_amount->setStyleSheet("QLabel { color: #555555; font-size: 17px; font-weight:100; }");
+	layout->addWidget(m_tx_amount, 2, 0);
 
-	QLabel *l5 = new QLabel("Amount: - byte", 0);
-	l5->setStyleSheet("QLabel { color: #555555; font-size: 17px; font-weight:100; }");
-	layout->addWidget(l5, 2, 1);
+	m_rx_amount = new QLabel("Amount: - byte", 0);
+	m_rx_amount->setStyleSheet("QLabel { color: #555555; font-size: 17px; font-weight:100; }");
+	layout->addWidget(m_rx_amount, 2, 1);
 
-	QLabel *l6 = new QLabel("Bandwidth MAX: - byte/s", 0);
-	l6->setStyleSheet("QLabel { color: #555555; font-size: 17px; font-weight:100; }");
-	layout->addWidget(l6, 3, 0);
+	m_tx_bandwidth_max = new QLabel("Bandwidth MAX: - byte/s", 0);
+	m_tx_bandwidth_max->setStyleSheet("QLabel { color: #555555; font-size: 17px; font-weight:100; }");
+	layout->addWidget(m_tx_bandwidth_max, 3, 0);
 
-	QLabel *l7 = new QLabel("Bandwidth AVG: - byte/s", 0);
-	l7->setStyleSheet("QLabel { color: #555555; font-size: 17px; font-weight:100; }");
-	layout->addWidget(l7, 3, 1);
+	m_tx_bandwidth_avg = new QLabel("Bandwidth AVG: - byte/s", 0);
+	m_tx_bandwidth_avg->setStyleSheet("QLabel { color: #555555; font-size: 17px; font-weight:100; }");
+	layout->addWidget(m_tx_bandwidth_avg, 3, 1);
 
-	QLabel *l8 = new QLabel("Bandwidth MAX: - byte/s", 0);
-	l8->setStyleSheet("QLabel { color: #555555; font-size: 17px; font-weight:100; }");
-	layout->addWidget(l8, 4, 0);
+	m_rx_bandwidth_max = new QLabel("Bandwidth MAX: - byte/s", 0);
+	m_rx_bandwidth_max->setStyleSheet("QLabel { color: #555555; font-size: 17px; font-weight:100; }");
+	layout->addWidget(m_rx_bandwidth_max, 4, 0);
 
-	QLabel *l9 = new QLabel("Bandwidth AVG: - byte/s", 0);
-	l9->setStyleSheet("QLabel { color: #555555; font-size: 17px; font-weight:100; }");
-	layout->addWidget(l9, 4, 1);
+	m_rx_bandwidth_avg = new QLabel("Bandwidth AVG: - byte/s", 0);
+	m_rx_bandwidth_avg->setStyleSheet("QLabel { color: #555555; font-size: 17px; font-weight:100; }");
+	layout->addWidget(m_rx_bandwidth_avg, 4, 1);
 
-	parent->addLayout(layout);
+	add_cs_rect_widget(layout);
+
+	m_parent_layout->addLayout(layout);
 }
