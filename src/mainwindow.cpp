@@ -267,8 +267,10 @@ void MainWindow::show_dialog()
 void MainWindow::about()
 {
 	QMessageBox::about(this, tr("About Menu"),
-			tr("The <b>Menu</b> example shows how to create "
-			"menu-bar menus and context menus."));
+			"<b>IPProof</b> is Free Software and licenced under "
+			"GPLv3 (or higher).<br ><br >"
+			"Contact: Hagen Paul Pfeifer &lt;hagen@jauu.net&gt;<br ><br >"
+			"URL: http://research.protocollabs.com/ipproof/");
 }
 
 
