@@ -45,7 +45,7 @@ void ConnectionStatWidget::init_layout()
 
 	QLabel *l1 = new QLabel("Duration", 0);
 	l1->setStyleSheet("QLabel { color: #555555; font-size: 22px; font-weight:100; }");
-	layout->addWidget(l1, 0, 0, 1, 0, Qt::AlignHCenter);
+	layout->addWidget(l1, 0, 0, 1, 0);
 
 	QLabel *l2 = new QLabel("Receive", 0);
 	l2->setStyleSheet("QLabel { color: #555555; font-size: 17px; font-weight:100; }");

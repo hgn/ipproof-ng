@@ -102,7 +102,7 @@ void MainWindow::add_main_content(QVBoxLayout *layout)
 	add_content_troughput_graph(splitter);
 
 	QLabel *label = new QLabel();
-	QPixmap pixmap(":/image-ipproof-logo-small.png");
+	QPixmap pixmap(":/image-ipproof-foo.png");
 	label->setPixmap(pixmap);
 	label->setMask(pixmap.mask());
 	label->setStyleSheet("QLabel { color: #555555; font-size: 32px; font-weight:100; }");
