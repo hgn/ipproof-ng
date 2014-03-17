@@ -24,6 +24,8 @@ class ConnectionStatRectWidget : public QWidget
 
 		ConnectionStatWidget *m_cs_widget;
 
+		int m_percent_received;
+
 };
 
 #endif // CONNECTIONSTATRECTWIDGET_H
