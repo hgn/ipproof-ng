@@ -24,6 +24,17 @@ static.
 
 ### Linux
 
+#### Fedora 20
+
+```
+sudo yum install qt5-qttools libqt5-qtbase-devel qt5-qtbase-devel gcc-c++
+qmake-qt5
+make
+```
+
+
+#### Debian
+
 
 ```
 apt-get install qt5-qmake qt5-default

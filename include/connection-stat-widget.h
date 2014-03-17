@@ -20,6 +20,7 @@ class ConnectionStatWidget : public QWidget
 		ConnectionStatWidget(ConnectionData *, QHBoxLayout *layout, QWidget *parent = 0);
 		void show(QHBoxLayout *);
 		void update_data();
+		ConnectionData *getConnectionData();
 
 	private:
 

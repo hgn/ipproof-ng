@@ -23,7 +23,6 @@ void ConnectionStatRectWidget::paintEvent(QPaintEvent *e)
 }
 
 
-
 void ConnectionStatRectWidget::drawRect(QPainter *qp)
 {
 	int i;
@@ -54,5 +53,7 @@ void ConnectionStatRectWidget::drawRect(QPainter *qp)
 
 void ConnectionStatRectWidget::update_data()
 {
+	// get data
+	ConnectionData *conn_data = m_cs_widget->getConnectionData();
 }
 

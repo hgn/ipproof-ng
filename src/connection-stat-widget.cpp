@@ -29,6 +29,12 @@ void ConnectionStatWidget::update_data()
 }
 
 
+ConnectionData *ConnectionStatWidget::getConnectionData()
+{
+	return m_connection_data;
+}
+
+
 void ConnectionStatWidget::add_cs_rect_widget(QGridLayout *l)
 {
 	m_cs_rect_widget = new ConnectionStatRectWidget(this);
