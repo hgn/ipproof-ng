@@ -6,6 +6,7 @@
 #include <QVector>
 #include <QSplitter>
 #include <QColor>
+#include <QMutex>
 
 #include "server-listener.h"
 #include "throughput-widget.h"
@@ -61,6 +62,7 @@ class MainWindow : public QMainWindow
 		QVector<ConnectionData *> get_connection_data();
 		void newConnection(int);
 		void add_network_connection_data(QTcpSocket *socket, unsigned int packet_len);
+		QMutex m_connection_data_mutex;
 
 	signals:
 		void new_data(QTcpSocket *socket, unsigned int packet_len);

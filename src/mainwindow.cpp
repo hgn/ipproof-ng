@@ -209,6 +209,7 @@ void MainWindow::add_network_connection_data_slot(QTcpSocket *socket, unsigned i
 
 	id = get_socket_id(socket);
 
+	m_connection_data_mutex.lock();
 	QVectorIterator<ConnectionData *> i(m_connection_data);
 
 	while (i.hasNext()) {
@@ -225,6 +226,7 @@ void MainWindow::add_network_connection_data_slot(QTcpSocket *socket, unsigned i
 		qDebug() << "RECEIVED DATA ALL: " << s->bytes_received;
 		break;
 	}
+	m_connection_data_mutex.unlock();
 
 	if (found_in_db == false) {
 		s = new ConnectionData();
@@ -234,7 +236,9 @@ void MainWindow::add_network_connection_data_slot(QTcpSocket *socket, unsigned i
 		s->color = ColorPicker::Instance()->next();
 		register_new_connectio_stat(s);
 
+		m_connection_data_mutex.lock();
 		m_connection_data.append(s);
+		m_connection_data_mutex.unlock();
 		qDebug() << "New connection from " << id;
 	}
 

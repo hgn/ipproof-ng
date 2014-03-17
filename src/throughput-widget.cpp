@@ -75,6 +75,7 @@ void Throughput::drawThroughtputGraphs(QPainter *qp)
 	unsigned int now = QDateTime::currentDateTime().toTime_t();
 	QVector<ConnectionData *> connection_data;
 
+	m_main_window->m_connection_data_mutex.lock();
 	connection_data = m_main_window->get_connection_data();
 
 	QVectorIterator<ConnectionData *> i(connection_data);
@@ -85,6 +86,7 @@ void Throughput::drawThroughtputGraphs(QPainter *qp)
 		qp->setRenderHint(QPainter::Antialiasing, true);
 		drawThroughputGraph(s, qp, now);
 	}
+	m_main_window->m_connection_data_mutex.unlock();
 }
 
 

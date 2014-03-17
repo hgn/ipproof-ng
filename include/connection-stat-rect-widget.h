@@ -2,6 +2,7 @@
 #define CONNECTIONSTATRECTWIDGET_H
 
 #include <QWidget>
+#include <QColor>
 
 class ConnectionStatWidget;
 
@@ -25,6 +26,7 @@ class ConnectionStatRectWidget : public QWidget
 		ConnectionStatWidget *m_cs_widget;
 
 		int m_percent_received;
+		QColor m_color;
 
 };
 
