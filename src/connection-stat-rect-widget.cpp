@@ -65,6 +65,6 @@ void ConnectionStatRectWidget::update_data()
 
 	qDebug() << "Percent: " << m_percent_received;
 
-	repaint();
+    repaint();
 }
 

@@ -56,7 +56,6 @@ MainWindow::MainWindow()
 	QObject::connect(this, SIGNAL(new_data(QTcpSocket *, unsigned int)), this, SLOT(add_network_connection_data_slot(QTcpSocket *, unsigned int)));
 
 
-
 	QVBoxLayout *layout = new QVBoxLayout;
 	layout->setMargin(5);
 
@@ -71,7 +70,7 @@ MainWindow::MainWindow()
 	setMinimumSize(460, 460);
 	showMaximized();
 
-	startTimer(1000);
+    startTimer(125);
 }
 
 
@@ -123,8 +122,21 @@ void MainWindow::add_main_content(QVBoxLayout *layout)
 
 void MainWindow::timerEvent(QTimerEvent *event)
 {
+    ConnectionData *s;
 	(void)event;
-	m_throughput_widget->repaint();
+
+    m_connection_data_mutex.lock();
+    QVectorIterator<ConnectionData *> i(m_connection_data);
+
+    while (i.hasNext()) {
+        s = i.next();
+        s->connection_stat_widget->update_time();
+
+    }
+    m_connection_data_mutex.unlock();
+
+    // we repaint the throughput widget as well
+    m_throughput_widget->repaint();
 }
 
 
@@ -230,6 +242,7 @@ void MainWindow::add_network_connection_data_slot(QTcpSocket *socket, unsigned i
 
 	if (found_in_db == false) {
 		s = new ConnectionData();
+        s->start_time.start();
 		s->id = id;
 		s->bytes_received = packet_len;
 		s->bytes_expected = 30000;

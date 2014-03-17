@@ -20,6 +20,7 @@ class ConnectionStatWidget : public QWidget
 		ConnectionStatWidget(ConnectionData *, QHBoxLayout *layout, QWidget *parent = 0);
 		void show(QHBoxLayout *);
 		void update_data();
+        void update_time();
 		ConnectionData *getConnectionData();
 
 	private:
@@ -31,6 +32,8 @@ class ConnectionStatWidget : public QWidget
 		ConnectionStatRectWidget *m_cs_rect_widget;
 
 		QHBoxLayout *m_parent_layout;
+
+        QLabel *m_duration;
 
 		QLabel *m_tx_amount;
 		QLabel *m_tx_bandwidth_max;

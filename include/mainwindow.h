@@ -7,6 +7,7 @@
 #include <QSplitter>
 #include <QColor>
 #include <QMutex>
+#include <QTime>
 
 #include "server-listener.h"
 #include "throughput-widget.h"
@@ -46,6 +47,7 @@ struct ConnectionData {
 	QColor color;
 	QVector< QPair< unsigned int , unsigned int > > bytes_per_second;
 	ConnectionStatWidget *connection_stat_widget;
+    QTime start_time;
 };
 
 class MainWindow : public QMainWindow
