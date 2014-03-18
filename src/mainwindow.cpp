@@ -54,6 +54,7 @@ MainWindow::MainWindow()
 	QWidget *widget = new QWidget;
 	setCentralWidget(widget);
 	QObject::connect(this, SIGNAL(new_data(QTcpSocket *, unsigned int)), this, SLOT(add_network_connection_data_slot(QTcpSocket *, unsigned int)));
+    QObject::connect(this, SIGNAL(connection_end_signal(QString)), this, SLOT(connection_end_slot(QString)));
 
 
 	QVBoxLayout *layout = new QVBoxLayout;
@@ -70,7 +71,7 @@ MainWindow::MainWindow()
 	setMinimumSize(460, 460);
 	showMaximized();
 
-    startTimer(125);
+    startTimer(1000);
 }
 
 
@@ -206,6 +207,39 @@ void MainWindow::register_new_connectio_stat(ConnectionData *conn_data)
 		new ConnectionStatWidget(conn_data, m_lower_status_layout);
 }
 
+
+void MainWindow::connection_end(QString id)
+{
+    qDebug() << "CONNECTION END";
+    emit connection_end_signal(id);
+}
+
+
+void MainWindow::connection_end_slot(QString id)
+{
+    ConnectionData *s;
+
+    qDebug() << "CALL END ITER";
+
+    m_connection_data_mutex.lock();
+    QVectorIterator<ConnectionData *> i(m_connection_data);
+
+    while (i.hasNext()) {
+        s = i.next();
+        qDebug() << "III" << id << "-" <<s->id;
+
+        if (id != s->id) {
+            continue;
+        }
+
+        qDebug() << "CALL END";
+        s->connection_stat_widget->connection_end();
+        break;
+    }
+    m_connection_data_mutex.unlock();
+}
+
+
 void MainWindow::add_network_connection_data(QTcpSocket *socket, unsigned int packet_len)
 {
 	emit new_data(socket, packet_len);
@@ -243,7 +277,13 @@ void MainWindow::add_network_connection_data_slot(QTcpSocket *socket, unsigned i
 	if (found_in_db == false) {
 		s = new ConnectionData();
         s->start_time.start();
+
 		s->id = id;
+        s->sip = QString("%1").arg(socket->localAddress().toString());
+        s->dip = QString("%1").arg(socket->peerAddress().toString());
+        s->sport = QString("%1").arg(socket->localPort());
+        s->dport = QString("%1").arg(socket->peerPort());
+
 		s->bytes_received = packet_len;
 		s->bytes_expected = 30000;
 		s->color = ColorPicker::Instance()->next();

@@ -16,6 +16,7 @@ ConnectionStatRectWidget::ConnectionStatRectWidget(ConnectionStatWidget *csw, QW
 	m_percent_received = 0;
 
 	m_color = QColor(csw->getConnectionData()->color);
+    m_initial_resized = false;
 }
 
 
@@ -30,8 +31,6 @@ void ConnectionStatRectWidget::paintEvent(QPaintEvent *e)
 
 void ConnectionStatRectWidget::drawRect(QPainter *qp)
 {
-	int i;
-
 	// draw background
 	QRectF rect(0, 0, this->width() - 10, H);
 	qp->setBrush(QBrush(QColor(100, 100, 100, 255)));
@@ -47,7 +46,10 @@ void ConnectionStatRectWidget::drawRect(QPainter *qp)
 		qp->drawRoundedRect(frect.translated(0.5,0.5), 5.0, 5.0 );
 	}
 
-	resize(this->width(), H + 10);
+    if (this->height() != H + 10) {
+        resize(this->width(), H + 10);
+        //m_initial_resized = true;
+    }
 }
 
 

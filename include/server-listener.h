@@ -26,6 +26,7 @@ class ServerListenerThread : public QThread
 	private:
 		QTcpSocket *socket;
 		int socketDescriptor;
+        QString m_id;
         MainWindow *m_main_window;
 };
 

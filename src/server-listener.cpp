@@ -31,26 +31,31 @@ void ServerListenerThread::run()
 
 	qDebug() << socketDescriptor << " Client connected";
 
+
+    m_id = QString("%1:%2:%3:%4")
+        .arg(socket->peerAddress().toString())
+        .arg(socket->peerPort())
+        .arg(socket->localAddress().toString())
+        .arg(socket->localPort());
+
 	exec();
 }
 
 
 void ServerListenerThread::readyRead()
 {
-    QByteArray Data = socket->readAll();
+    QByteArray data = socket->readAll();
 
-    m_main_window->add_network_connection_data(socket, Data.length());
+    m_main_window->add_network_connection_data(socket, data.length());
 }
 
 
 void ServerListenerThread::disconnected()
 {
-    qDebug() << socketDescriptor << " Disconnected";
-
+    m_main_window->connection_end(m_id);
     socket->deleteLater();
     exit(0);
 }
-
 
 
 TCPServer::TCPServer(QObject *parent) :

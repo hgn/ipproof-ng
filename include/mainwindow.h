@@ -41,6 +41,10 @@ class Throughput;
 
 struct ConnectionData {
 	QString id;
+    QString sip;
+    QString dip;
+    QString sport;
+    QString dport;
 	unsigned int bytes_received;
 	unsigned int bytes_expected;
 	unsigned int data_start;
@@ -64,14 +68,17 @@ class MainWindow : public QMainWindow
 		QVector<ConnectionData *> get_connection_data();
 		void newConnection(int);
 		void add_network_connection_data(QTcpSocket *socket, unsigned int packet_len);
+        void connection_end(QString id);
 		QMutex m_connection_data_mutex;
 
 	signals:
 		void new_data(QTcpSocket *socket, unsigned int packet_len);
+        void connection_end_signal(QString id);
 
 	public slots:
 
 		void add_network_connection_data_slot(QTcpSocket *socket, unsigned int packet_len);
+        void connection_end_slot(QString id);
 
 	protected:
 

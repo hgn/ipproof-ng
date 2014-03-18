@@ -28,6 +28,8 @@ class ConnectionStatRectWidget : public QWidget
 		int m_percent_received;
 		QColor m_color;
 
+        bool m_initial_resized;
+
 };
 
 #endif // CONNECTIONSTATRECTWIDGET_H
