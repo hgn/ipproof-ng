@@ -31,11 +31,25 @@ static int draw_width;
 static int draw_start_right;
 
 
+int Throughput::scale_to_y_axis(unsigned int bytes_per_second)
+{
+    int avail_height = this->height() - OUTER_PADDING * 2;
+    unsigned int max_val = m_main_window->get_max_bandwidth();
+
+    float percent = ((float)bytes_per_second / ((float)max_val));
+    float height = avail_height * percent;
+
+    return (int)(this->height() - height + OUTER_PADDING);
+}
+
+
 void Throughput::drawThroughputGraph(ConnectionData *cn, QPainter *qp, unsigned int now)
 {
 	int x_prev = draw_start_right;
 	int x_pos = draw_start_right;
 	int gap_distance;
+    int y_prev = scale_to_y_axis(0);;
+    int y_pos;
 	unsigned int i;
 	QVectorIterator< QPair< unsigned int , unsigned int > > iter(cn->bytes_per_second);
 	QVector<int> mdata;
@@ -48,22 +62,25 @@ void Throughput::drawThroughputGraph(ConnectionData *cn, QPainter *qp, unsigned 
 	gap_distance = (int)((float)draw_width / TIME_TO_VISUALIZE);
 	QPair< unsigned int , unsigned int > data = iter.previous();
 
-
 	for (i = now; i >= now - TIME_TO_VISUALIZE; i--) {
 		if (data.first < i) {
 			// no data for time "i"
-			if (x_prev != x_pos)
-				qp->drawLine(x_pos, 200, x_prev, 200);
+            if (x_prev != x_pos) {
+                y_pos = scale_to_y_axis(0);
+                qp->drawLine(x_pos, y_prev, x_prev, y_pos);
+            }
 		}
 
 		if (data.first == i) {
 			if (x_prev != x_pos)
-				qp->drawLine(x_pos, 100, x_prev, 100);
+                y_pos = scale_to_y_axis(data.second);
+                qp->drawLine(x_pos, y_pos, x_prev, y_pos);
 			if (!iter.hasPrevious()) {
 				break;
 			}
 			data = iter.previous();
 		}
+        y_prev = y_pos;
 		x_prev = x_pos;
 		x_pos -= gap_distance;
 	}

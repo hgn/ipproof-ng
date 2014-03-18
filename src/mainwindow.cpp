@@ -71,6 +71,8 @@ MainWindow::MainWindow()
 	setMinimumSize(460, 460);
 	showMaximized();
 
+    m_bytes_per_second_max = 0;
+
     startTimer(1000);
 }
 
@@ -207,6 +209,11 @@ void MainWindow::register_new_connectio_stat(ConnectionData *conn_data)
 		new ConnectionStatWidget(conn_data, m_lower_status_layout);
 }
 
+unsigned int MainWindow::get_max_bandwidth()
+{
+    return m_bytes_per_second_max;
+}
+
 
 void MainWindow::connection_end(QString id)
 {
@@ -219,20 +226,14 @@ void MainWindow::connection_end_slot(QString id)
 {
     ConnectionData *s;
 
-    qDebug() << "CALL END ITER";
-
     m_connection_data_mutex.lock();
     QVectorIterator<ConnectionData *> i(m_connection_data);
 
     while (i.hasNext()) {
         s = i.next();
-        qDebug() << "III" << id << "-" <<s->id;
-
-        if (id != s->id) {
+        if (id != s->id)
             continue;
-        }
 
-        qDebug() << "CALL END";
         s->connection_stat_widget->connection_end();
         break;
     }
@@ -262,14 +263,12 @@ void MainWindow::add_network_connection_data_slot(QTcpSocket *socket, unsigned i
 		s = i.next();
 
 		if (id != s->id) {
-			qDebug() << "Not identical: " << id << s->id;
 			continue;
 		}
 
 		found_in_db = true;
 		s->bytes_received += packet_len;
 		s->connection_stat_widget->update_data();
-		qDebug() << "RECEIVED DATA ALL: " << s->bytes_received;
 		break;
 	}
 	m_connection_data_mutex.unlock();
@@ -304,6 +303,10 @@ void MainWindow::add_network_connection_data_slot(QTcpSocket *socket, unsigned i
 
 		if (s.first == timestamp) {
 			s.second += packet_len;
+            if (s.second > m_bytes_per_second_max) {
+                // update the global max byte/s
+                m_bytes_per_second_max = s.second;
+            }
 			found_in_db = true;
 			break;
 		}

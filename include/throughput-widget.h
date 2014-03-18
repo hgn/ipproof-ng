@@ -23,6 +23,8 @@ class Throughput : public QWidget
   private:
     MainWindow *m_main_window;
 
+    int scale_to_y_axis(unsigned int);
+
 };
 
 #endif // THROUGHPUTWIDGET_H

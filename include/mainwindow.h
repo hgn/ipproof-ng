@@ -71,6 +71,8 @@ class MainWindow : public QMainWindow
         void connection_end(QString id);
 		QMutex m_connection_data_mutex;
 
+        unsigned int get_max_bandwidth();
+
 	signals:
 		void new_data(QTcpSocket *socket, unsigned int packet_len);
         void connection_end_signal(QString id);
@@ -111,6 +113,7 @@ class MainWindow : public QMainWindow
 		void close_listening_sockets();
 
 		QVector<TCPServer *> m_tcp_servers;
+        unsigned int m_bytes_per_second_max;
 		QVector<ConnectionData *> m_connection_data;
 
 		unsigned int m_expected_bytes;
