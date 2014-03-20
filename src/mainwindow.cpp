@@ -54,7 +54,7 @@ MainWindow::MainWindow()
 	QWidget *widget = new QWidget;
 	setCentralWidget(widget);
 	QObject::connect(this, SIGNAL(new_data(QTcpSocket *, unsigned int)), this, SLOT(add_network_connection_data_slot(QTcpSocket *, unsigned int)));
-    QObject::connect(this, SIGNAL(connection_end_signal(QString)), this, SLOT(connection_end_slot(QString)));
+	QObject::connect(this, SIGNAL(connection_end_signal(QString)), this, SLOT(connection_end_slot(QString)));
 
 
 	QVBoxLayout *layout = new QVBoxLayout;
@@ -71,9 +71,9 @@ MainWindow::MainWindow()
 	setMinimumSize(460, 460);
 	showMaximized();
 
-    m_bytes_per_second_max = 0;
+	m_bytes_per_second_max = 0;
 
-    startTimer(1000);
+	startTimer(1000);
 }
 
 
@@ -250,7 +250,7 @@ void MainWindow::add_network_connection_data(QTcpSocket *socket, unsigned int pa
 void MainWindow::add_network_connection_data_slot(QTcpSocket *socket, unsigned int packet_len)
 {
 	QString id;
-	ConnectionData *s;
+	ConnectionData *s = NULL;
 	bool found_in_db = false;
 	unsigned int timestamp = QDateTime::currentDateTime().toTime_t();
 
@@ -275,13 +275,13 @@ void MainWindow::add_network_connection_data_slot(QTcpSocket *socket, unsigned i
 
 	if (found_in_db == false) {
 		s = new ConnectionData();
-        s->start_time.start();
+		s->start_time.start();
 
 		s->id = id;
-        s->sip = QString("%1").arg(socket->localAddress().toString());
-        s->dip = QString("%1").arg(socket->peerAddress().toString());
-        s->sport = QString("%1").arg(socket->localPort());
-        s->dport = QString("%1").arg(socket->peerPort());
+		s->sip = QString("%1").arg(socket->localAddress().toString());
+		s->dip = QString("%1").arg(socket->peerAddress().toString());
+		s->sport = QString("%1").arg(socket->localPort());
+		s->dport = QString("%1").arg(socket->peerPort());
 
 		s->bytes_received = packet_len;
 		s->bytes_expected = 30000;
@@ -300,13 +300,12 @@ void MainWindow::add_network_connection_data_slot(QTcpSocket *socket, unsigned i
 	found_in_db = false;
 	while (iter.hasNext()) {
 		QPair< unsigned int , unsigned int > s = iter.next();
-
 		if (s.first == timestamp) {
 			s.second += packet_len;
-            if (s.second > m_bytes_per_second_max) {
-                // update the global max byte/s
-                m_bytes_per_second_max = s.second;
-            }
+			if (s.second > m_bytes_per_second_max) {
+				// update the global max byte/s
+				m_bytes_per_second_max = s.second;
+			}
 			found_in_db = true;
 			break;
 		}
@@ -314,6 +313,9 @@ void MainWindow::add_network_connection_data_slot(QTcpSocket *socket, unsigned i
 
 	if (found_in_db == false) {
 		s->bytes_per_second.append(qMakePair(timestamp, packet_len));
+		if (packet_len > m_bytes_per_second_max) {
+			m_bytes_per_second_max = packet_len;
+		}
 	}
 }
 

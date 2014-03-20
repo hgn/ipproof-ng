@@ -39,6 +39,8 @@ int Throughput::scale_to_y_axis(unsigned int bytes_per_second)
 	float percent = ((float)bytes_per_second / ((float)max_val));
 	float height = avail_height * percent;
 
+	qDebug() << "new height: " << bytes_per_second;
+
 	return (int)(this->height() - height + OUTER_PADDING);
 }
 
